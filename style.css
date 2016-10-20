@@ -1,0 +1,52 @@
+* {
+	margin: auto;
+}
+
+body {
+	display: table;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+
+.center {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#board {
+	margin-left: auto;
+	margin-right: auto; 
+	border-collapse: collapse;
+}
+
+#board tr:first-child {
+	border-top: none;
+}
+
+#board td {
+	font-family: 'Open Sans', sans-serif;
+	text-align: center;
+	border: 4px solid #71ba60;
+	background-color: #ceedc7;
+	padding: 10px;
+	width: 30px;
+	height: 30px;
+	border-radius: 5px;
+}
+
+#board tr:last-child td {
+	border-bottom: none;
+}
+
+#board tr td:first-child {
+	border-left: none;
+}
+
+#board tr td:last-child {
+	border-right: none;
+}
+
+#board tr:first-child td {
+	border-top: none;
+}
