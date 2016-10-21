@@ -10,56 +10,19 @@ class View {
 		return this.board.rows[row].cells[col];
 	}
 
-	generateEvents() {
-		for (let row = 0; row < 3; row++) {
-			for (let col = 0; col < 3; col++) {
-				getCell(row, col).addEventListener("click", this.controller.move());
-			}
-		}
-	}
-
 	setStone(player, row, col) {
-		getCell(row, col).InnerHTML = player.stone;
+		this.getCell(row, col).innerHTML = player.stone;
+		this.getCell(row, col).className = player.stone;
 	}
 	
 }
 
 
-// Controller
-
-class Controller {
-	constructor(view, game) {
-		this.view = new View(this);
-		this.game = new ticTacToe();
-	}
-
-	setStone(player, row, col) {
-		getCell(row, col).InnerHTML = player.stone;
-	}
-
-	move(row, col) {
-		var player = this.game.player[0];
-		this.game().move(row, col);
-		this.setStone(player, row, col);
-	}
-}
-
-
 // Model
-
-class Player {
-	constructor(ticTacToe, stone) {
-		self.ticTacToe = ticTacToe;
-		self.stone = stone;
-	}
-	move(row, col) {
-		self.ticTacToe.board[row][col] = this;
-	}
-}
 
 class TicTacToe {
 	constructor() {
-		this.players = [Player(this, "X"), Player(this, "O")].shuffle();
+		this.players = [new Player(this, "X"), new Player(this, "O")];
 		this.board = [[null, null, null], [null, null, null], [null, null, null]];
 		this.winningCombinations = [
 			// rows
@@ -77,12 +40,51 @@ class TicTacToe {
 	}
 
 	move(row, col) {
-		self.players[0].move(row, col);
-		self.check(turn);
-		self.players.reverse();
+		this.players[0].move(row, col);
+		//this.check(turn);
+		this.players.reverse();
 	}
 
 }
+
+class Player {
+	constructor(game, stone) {
+		this.game = game;
+		this.stone = stone;
+	}
+	move(row, col) {
+		this.game.board[row][col] = this.stone;
+	}
+}
+
+
+// Controller
+
+class Controller {
+	constructor() {
+		this.view = new View(this);
+		this.game = new TicTacToe();
+		this.generateEvents();
+	}
+
+
+	move(row, col) {
+		var player = this.game.players[0];
+		this.game.move(row, col);
+		this.view.setStone(player, row, col);
+
+	}
+
+	generateEvents() {
+		for (let row = 0; row < 3; row++) {
+			for (let col = 0; col < 3; col++) {
+				this.view.getCell(row, col).addEventListener("click", () => this.move(row, col));
+			}
+		}
+	}
+
+}
+
 
 Array.prototype.shuffle = function () {
     var m = this.length;
@@ -94,5 +96,5 @@ Array.prototype.shuffle = function () {
 };
 
 window.onload = function() {
-	controller = new Controller(view, new TicTacToe());
+	controller = new Controller();
 };
