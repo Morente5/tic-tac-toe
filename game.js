@@ -14,7 +14,6 @@ class View {
 		this.getCell(row, col).innerHTML = player.stone;
 		this.getCell(row, col).className = player.stone;
 	}
-	
 }
 
 
@@ -22,7 +21,7 @@ class View {
 
 class TicTacToe {
 	constructor() {
-		this.players = [new Player(this, "X"), new Player(this, "O")];
+		this.players = [new Player(this, "X"), new Player(this, "O")].shuffle();
 		this.board = [[null, null, null], [null, null, null], [null, null, null]];
 		this.winningCombinations = [
 			// rows
@@ -40,9 +39,12 @@ class TicTacToe {
 	}
 
 	move(row, col) {
-		this.players[0].move(row, col);
-		//this.check(turn);
-		this.players.reverse();
+		if (!this.board[row][col]) {
+			this.players[0].move(row, col);
+			this.players[0].isWinner();
+			this.players.reverse();
+			return true;
+		}
 	}
 
 }
@@ -52,9 +54,11 @@ class Player {
 		this.game = game;
 		this.stone = stone;
 	}
+
 	move(row, col) {
-		this.game.board[row][col] = this.stone;
+		this.game.board[row][col] = this;
 	}
+
 }
 
 
@@ -62,17 +66,9 @@ class Player {
 
 class Controller {
 	constructor() {
-		this.view = new View(this);
 		this.game = new TicTacToe();
+		this.view = new View(this);
 		this.generateEvents();
-	}
-
-
-	move(row, col) {
-		var player = this.game.players[0];
-		this.game.move(row, col);
-		this.view.setStone(player, row, col);
-
 	}
 
 	generateEvents() {
@@ -81,6 +77,15 @@ class Controller {
 				this.view.getCell(row, col).addEventListener("click", () => this.move(row, col));
 			}
 		}
+	}
+
+	move(row, col) {
+		var player = this.game.players[0];
+		// If movement was successful, set stone
+		if (this.game.move(row, col)) {
+			this.view.setStone(player, row, col);
+		}
+
 	}
 
 }
