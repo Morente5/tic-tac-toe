@@ -43,7 +43,7 @@ class TicTacToe {
 		[this.board[0][2], this.board[1][2], this.board[2][2]],
 		// diagonal
 		[this.board[0][0], this.board[1][1], this.board[2][2]],
-		[this.board[0][2], this.board[1][1], this.board[2][1]],
+		[this.board[0][2], this.board[1][1], this.board[2][0]],
 		];
 	}
 
@@ -54,6 +54,9 @@ class TicTacToe {
 			var winn = this.players[0].win();
 			this.players.reverse();
 			return {movement: move, winner: winn};
+		}
+		else {
+			return {movement: null, winner: null};
 		}
 	}
 
@@ -67,6 +70,7 @@ class Player {
 
 	move(row, col) {
 		this.game.board[row][col] = this;
+		return this;
 	}
 
 	win() {
