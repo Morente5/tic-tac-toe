@@ -29,6 +29,7 @@ class TicTacToe {
 		this.players = [new Player(this, "X"), new Player(this, "O")].shuffle();
 		this.board = [[null, null, null], [null, null, null], [null, null, null]];
 		this.winner = null;
+		this.finished = false;
 	}
 
 	get winningCombinations() { 
@@ -51,13 +52,18 @@ class TicTacToe {
 		var occupied = this.board[row][col];
 		if (!occupied) {
 			var move = this.players[0].move(row, col);
-			var winn = this.players[0].win();
+			this.winner = this.players[0].win();
+			this.finished = this.finish();
 			this.players.reverse();
-			return {movement: move, winner: winn};
+			return {movement: move, winner: this.winner, finished: this.finished};
 		}
 		else {
-			return {movement: null, winner: null};
+			return {movement: null, winner: null, finished: null};
 		}
+	}
+
+	finish() {
+		return !this.board.some(elem => elem.some(elem2 => elem2 === null));
 	}
 
 }
@@ -75,7 +81,6 @@ class Player {
 
 	win() {
 		if (this.game.winningCombinations.some(elem => elem.every(elem2 => elem2 == this))) {
-			this.game.winner = this;
 			return this;
 		}
 		else {
@@ -116,6 +121,9 @@ class Controller {
 			}
 			if (result.winner) {
 				this.view.setMessage(player.stone + " won");
+			}
+			if (result.finished) {
+				this.view.setMessage("It's a tie");
 			}
 		}
 	}
